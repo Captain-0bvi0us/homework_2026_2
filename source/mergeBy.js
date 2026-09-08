@@ -26,10 +26,19 @@
  * @returns {Array<Object>} новый массив объединённых объектов
  */
 const mergeBy = (array1, array2, key) => {
+
+	if (!Array.isArray(array1) || !Array.isArray(array2) || !key) {
+		return [];
+	}
+
 	const result = [];
 	const indexByKey = new Map();
 
 	for (const obj of [...array1, ...array2]) {
+		if (obj === null || typeof obj !== "object") {
+			continue;
+		}
+
 		if (!(key in obj)) {
 			continue;
 		}
@@ -39,9 +48,9 @@ const mergeBy = (array1, array2, key) => {
 		if (!indexByKey.has(keyValue)) {
 			const cloned = {};
 
-			for (const prop of Object.keys(obj)) {
+			Object.keys(obj).forEach((prop) => {
 				cloned[prop] = Array.isArray(obj[prop]) ? [...obj[prop]] : obj[prop];
-			}
+			});
 
 			indexByKey.set(keyValue, result.length);
 			result.push(cloned);
@@ -55,13 +64,8 @@ const mergeBy = (array1, array2, key) => {
 
 			if (!(prop in target)) {
 				target[prop] = Array.isArray(value) ? [...value] : value;
-			} 
-			else if (Array.isArray(target[prop]) && Array.isArray(value)) {
-				for (const item of value) {
-					if (!target[prop].includes(item)) {
-						target[prop].push(item);
-					}
-				}
+			} else if (Array.isArray(target[prop]) && Array.isArray(value)) {
+				target[prop] = [...new Set([...target[prop], ...value])];
 			}
 		}
 	}

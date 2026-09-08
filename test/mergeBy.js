@@ -95,4 +95,67 @@ QUnit.module("Тестируем функцию mergeBy", function() {
             { id: 2, name: "Bob", tags: ["colleague", "friend", "family", "ready", "longlong"] }
         ]);
     });
+
+    QUnit.test("Не падает если первый аргумент не массив", function(assert) {
+        const array1 = null;
+        const array2 = [];
+        const result = mergeBy(array1, array2, "id");
+
+        assert.deepEqual(result, []);
+    });
+
+    QUnit.test("Не падает если второй аргумент не массив", function(assert) {
+        const array1 = [];
+        const array2 = null;
+        const result = mergeBy(array1, array2, "id");
+
+        assert.deepEqual(result, []);
+    });
+
+    QUnit.test("Пропускает элементы которые не объекты", function(assert) {
+        const array1 = [1, 2, 3];
+        const array2 = [];
+        const result = mergeBy(array1, array2, "id");
+
+        assert.deepEqual(result, []);
+    });
+
+    QUnit.test("Пропускает некорректные элементы и оставляет объекты", function(assert) {
+        const array1 = [
+            { id: 1, name: "Alice" },
+            2
+        ];
+        const array2 = [];
+        const result = mergeBy(array1, array2, "id");
+
+        assert.deepEqual(result, [
+            { id: 1, name: "Alice" }
+        ]);
+    });
+
+    QUnit.test("Не падает если ключ отсутствует", function(assert) {
+        const array1 = [
+            { id: 1, name: "Alice" }
+        ];
+        const array2 = [];
+        const result = mergeBy(array1, array2);
+
+        assert.deepEqual(result, []);
+    });
+
+    QUnit.test("Сливает два объекта с одинаковым ключом внутри одного массива", function(assert) {
+        const array1 = [
+            { id: 1, name: "Alice", tags: ["friend"] },
+            { id: 1, age: 30, tags: ["travel", "friend"] },
+            { id: 2, name: "Bob" }
+        ];
+        const array2 = [];
+        const result = mergeBy(array1, array2, "id");
+
+        assert.deepEqual(result, [
+            { id: 1, name: "Alice", tags: ["friend", "travel"], age: 30 },
+            { id: 2, name: "Bob"},
+        ]);
+    });
 });
+
