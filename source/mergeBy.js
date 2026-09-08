@@ -25,7 +25,6 @@
  *
  * @returns {Array<Object>} новый массив объединённых объектов
  */
-
 const mergeBy = (array1, array2, key) => {
 	const result = [];
 	const indexByKey = new Map();
