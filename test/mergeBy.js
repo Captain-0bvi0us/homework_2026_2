@@ -157,5 +157,13 @@ QUnit.module("Тестируем функцию mergeBy", function() {
             { id: 2, name: "Bob"},
         ]);
     });
+
+    QUnit.test("Сливает два объекта с пустым ключом", function(assert) {
+        const array1 = [{ '': 'x', a: 1 }];
+        const array2 = [{ '': 'x', b: 2 }];
+        const result = mergeBy(array1, array2, '');
+
+        assert.deepEqual(result, [{ '': 'x', a: 1, b: 2 }]);
+    });
 });
 

@@ -27,7 +27,7 @@
  */
 const mergeBy = (array1, array2, key) => {
 
-	if (!Array.isArray(array1) || !Array.isArray(array2) || !key) {
+	if (!Array.isArray(array1) || !Array.isArray(array2) || typeof key !== "string") {
 		return [];
 	}
 
