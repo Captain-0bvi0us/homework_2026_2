@@ -27,45 +27,41 @@
  */
 const mergeBy = (array1, array2, key) => {
 	if (!Array.isArray(array1) || !Array.isArray(array2) || typeof key !== "string") {
-	  return [];
+		return [];
 	}
-  
-	const state = [...array1, ...array2].reduce((acc, obj) => {
-	  if (obj === null || typeof obj !== "object") {
-		return acc;
-	  }
-  
-	  if (!(key in obj)) {
-		return acc;
-	  }
-  
-	  const keyValue = obj[key];
-  
-	  if (!acc.indexByKey.has(keyValue)) {
-		const cloned = Object.keys(obj).reduce((copy, prop) => {
-		  copy[prop] = Array.isArray(obj[prop]) ? [...obj[prop]] : obj[prop];
-		  return copy;
-		}, {});
-  
-		acc.indexByKey.set(keyValue, acc.result.length);
-		acc.result.push(cloned);
-		return acc;
-	  }
-  
-	  const target = acc.result[acc.indexByKey.get(keyValue)];
-  
-	  Object.keys(obj).forEach((prop) => {
-		const value = obj[prop];
-  
-		if (!(prop in target)) {
-		  target[prop] = Array.isArray(value) ? [...value] : value;
-		} else if (Array.isArray(target[prop]) && Array.isArray(value)) {
-		  target[prop] = [...new Set([...target[prop], ...value])];
+
+	const { result } = [...array1, ...array2].reduce((acc, obj) => {
+		if (obj === null || typeof obj !== "object" || !(key in obj)) {
+			return acc;
 		}
-	  });
-  
-	  return acc;
+
+		const keyValue = obj[key];
+
+		if (!acc.indexByKey.has(keyValue)) {
+			const cloned = Object.keys(obj).reduce((copy, prop) => {
+				copy[prop] = Array.isArray(obj[prop]) ? [...obj[prop]] : obj[prop];
+				return copy;
+			}, {});
+
+			acc.indexByKey.set(keyValue, acc.result.length);
+			acc.result.push(cloned);
+			return acc;
+		}
+
+		const target = acc.result[acc.indexByKey.get(keyValue)];
+
+		Object.keys(obj).forEach((prop) => {
+			const value = obj[prop];
+
+			if (!(prop in target)) {
+				target[prop] = Array.isArray(value) ? [...value] : value;
+			} else if (Array.isArray(target[prop]) && Array.isArray(value)) {
+				target[prop] = [...new Set([...target[prop], ...value])];
+			}
+		});
+
+		return acc;
 	}, { result: [], indexByKey: new Map() });
-  
-	return state.result;
+
+	return result;
 };
