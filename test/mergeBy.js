@@ -165,5 +165,23 @@ QUnit.module("Тестируем функцию mergeBy", function() {
 
         assert.deepEqual(result, [{ '': 'x', a: 1, b: 2 }]);
     });
+
+    QUnit.test("Не падает и корректно сливает объекты с undefined в значении ключа", function(assert) {
+        const array1 = [{ id: undefined, a: 1 }];
+        const array2 = [{ id: undefined, b: 2 }];
+    
+        const result = mergeBy(array1, array2, "id");
+    
+        assert.deepEqual(result, [{ id: undefined, a: 1, b: 2 }]);
+    });
+    
+    QUnit.test("Пропускает объекты, у которых ключ отсутствует, даже если в других он undefined", function(assert) {
+        const array1 = [{ a: 1 }];
+        const array2 = [{ id: undefined, b: 2 }];
+    
+        const result = mergeBy(array1, array2, "id");
+    
+        assert.deepEqual(result, [{ id: undefined, b: 2 }]);
+    });
 });
 
